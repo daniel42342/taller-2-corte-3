@@ -1,0 +1,123 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+class BusRoute {
+    private String routeNumber;
+    private List<String> stops;
+
+    public BusRoute(String routeNumber) {
+        this.routeNumber = routeNumber;
+        this.stops = new ArrayList<>();
+    }
+
+    public String getRouteNumber() {
+        return routeNumber;
+    }
+
+    public void addStop(String stop) {
+        stops.add(stop);
+    }
+
+    public List<String> getStops() {
+        return stops;
+    }
+}
+
+class BusService {
+    private Map<String, BusRoute> routes;
+    private List<String> holidayRoutes;
+
+    public BusService() {
+        routes = new HashMap<>();
+        holidayRoutes = new ArrayList<>();
+
+        // Agregar algunas rutas y paradas de ejemplo
+        BusRoute route1 = new BusRoute("G43");
+        route1.addStop("Estación A");
+        route1.addStop("Estación B");
+        route1.addStop("Estación C");
+        routes.put("G43", route1);
+
+        BusRoute route2 = new BusRoute("R15");
+        route2.addStop("Estación X");
+        route2.addStop("Estación Y");
+        routes.put("R15", route2);
+
+        holidayRoutes.add("G43");
+        holidayRoutes.add("R15");
+    }
+
+    public List<String> getStopsForRoute(String routeNumber) {
+        BusRoute route = routes.get(routeNumber);
+        if (route != null) {
+            return route.getStops();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<String> getHolidayRoutes() {
+        return holidayRoutes;
+    }
+}
+
+public class BusProgram {
+    public static void main(String[] args) {
+        BusService busService = new BusService();
+        Scanner scanner = new Scanner(System.in);
+        char choice;
+
+        do {
+            System.out.println("Menu:");
+            System.out.println("1. Consultar paradas de una ruta de bus");
+            System.out.println("2. Consultar rutas de bus que funcionan en feriados");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+            String input = scanner.next();
+            
+            if (input.length() != 1) {
+                System.out.println("Opción inválida. Por favor, seleccione una opción válida.");
+                continue;
+            }
+
+            choice = input.charAt(0);
+
+            switch (choice) {
+                case '1':
+                    System.out.print("Ingrese el número de ruta del bus: ");
+                    String routeNumber = scanner.next();
+                    List<String> stops = busService.getStopsForRoute(routeNumber);
+                    if (stops.isEmpty()) {
+                        System.out.println("No se encontraron paradas para la ruta " + routeNumber);
+                    } else {
+                        System.out.println("Paradas de la ruta " + routeNumber + ":");
+                        for (String stop : stops) {
+                            System.out.println(stop);
+                        }
+                    }
+                    break;
+                case '2':
+                    List<String> holidayRoutes = busService.getHolidayRoutes();
+                    if (holidayRoutes.isEmpty()) {
+                        System.out.println("No se encontraron rutas de bus para días feriados");
+                    } else {
+                        System.out.println("Rutas de bus para días feriados:");
+                        for (String route : holidayRoutes) {
+                            System.out.println(route);
+                        }
+                    }
+                    break;
+                case '3':
+                    System.out.println("Saliendo del programa...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Por favor, seleccione una opción válida.");
+                    break;
+            }
+        } while (choice != '3');
+
+        scanner.close();
+    }
+}
